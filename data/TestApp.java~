@@ -1,0 +1,72 @@
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import Legend.*;
+
+public class TestApp 
+{
+    private static Socket socket;
+
+	public static void main(String[] args) 
+	{	BufferedReader br=null;
+		BufferedReader br1=null;
+		File f=null;
+		File f1=null;
+		try
+		{	//Specify the folder paths to read from.
+			String sPath="./Target1/";
+			String sPath1="./Target2/";
+			f = new File("./Target1");
+			f1 = new File("./Target2");
+			File[] files = f.listFiles();
+			if(files==null)
+			{
+				System.out.println("Target1 not found");	
+				return;
+			}
+			File[] files1 = f1.listFiles();
+			if(files1==null)
+			{
+				System.out.println("Target2 not found");	
+				return;
+			}
+			for (File file : files) 
+			{
+			String sCurrentLine;
+			String sSendMsg="";
+			String sFullPath=sPath+file.getName();
+			br = new BufferedReader(new FileReader(sFullPath));
+					while ((sCurrentLine = br.readLine()) != null)
+					{
+					sSendMsg =sCurrentLine;
+					}
+						for (File file1 : files1) 
+						{
+						System.out.println("\n\n"+file.getName()+"\t"+file1.getName());
+						String sCurrentLine1;
+						String sSendMsg1="";
+						String sFullPath1=sPath1+file1.getName();
+						br1 = new BufferedReader(new FileReader(sFullPath1));
+								while ((sCurrentLine1 = br1.readLine()) != null)
+								{
+								sSendMsg1=sCurrentLine1;
+								}					
+						//Set the IP address(IP of server) and port number(should be 4567).						
+						Legend.ServerComponent sc=new Legend.ServerComponent("127.0.0.1",4567);
+						//Set the session ID. 
+						sc.SetSessionID("abcd");
+						//Set the timelimit in minutes. 
+						sc.SetTimeLimit(4); 
+						int iResult=sc.BioCompare(sSendMsg,sSendMsg1);
+						System.out.println("The Conversion Result is "+iResult);
+						}
+			}
+		}
+		catch (Exception exception) 
+        	{
+            	exception.printStackTrace();
+        	}
+        	
+    	}
+
+};
